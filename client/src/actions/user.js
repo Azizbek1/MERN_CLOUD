@@ -11,7 +11,7 @@ export const register = async (email, password) => {
         alert(err.response.data.message)
     }
 }
-export const login = (email, password) => {
+export const login = (email, password, navigate) => {
     return async dispatch => {
         try {
             const response = await axios.post(`http://localhost:5000/api/auth/login`, {
@@ -20,6 +20,7 @@ export const login = (email, password) => {
             })
             dispatch(setUser(response.data.user))
             localStorage.setItem('token', response.data.token)
+            navigate('disc')
         } catch (e) {
             alert(e.response.data.message)
         }
