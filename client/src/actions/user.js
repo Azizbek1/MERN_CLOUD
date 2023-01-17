@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { setUser } from '../reducers/userReducer'
+import { API_URL } from '../constants'
 export const register = async (email, password) => {
     try {
         const response = await axios.post('http://localhost:5000/api/auth/registration', {
@@ -14,7 +15,7 @@ export const register = async (email, password) => {
 export const login = (email, password, navigate) => {
     return async dispatch => {
         try {
-            const response = await axios.post(`http://localhost:5000/api/auth/login`, {
+            const response = await axios.post(`${API_URL}/auth/login`, {
                 email,
                 password
             })
@@ -29,7 +30,7 @@ export const login = (email, password, navigate) => {
 export const auth = () => {
     return async dispatch => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/auth/auth`, {
+            const response = await axios.get(`${API_URL}/auth/auth`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
