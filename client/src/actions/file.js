@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { addFile, deleteFileAction, setFiles } from '../reducers/fileReducer';
 import { API_URL } from '../constants';
+import { addUploadFile, changeUploadFile, showUploader } from '../reducers/uploadReducer';
 
 export function getFiles(dirId) {
     return async dispatch => {
@@ -40,24 +41,27 @@ export function uploadFile(file, dirId) {
             if (dirId) {
                 formData.append('parent', dirId)
             }
+            const uploadFile = { name: file.name, progress: 0, id: Date.now() }
+            dispatch(showUploader())
+            dispatch(addUploadFile(uploadFile))
             const response = await axios.post(`${API_URL}/files/upload`, formData, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-                onUploadProgress: (progressEvent) => {
-                    console.log(progressEvent);
+                onUploadProgress: progressEvent => {
                     const totalLength = progressEvent.event.lengthComputable ? progressEvent.total : progressEvent.event.target.getResponseHeader('content-length') || progressEvent.event.target.getResponseHeader('x-decompressed-content-length');
-                    console.log('total', totalLength)
                     if (totalLength) {
-                        let progress = Math.round((progressEvent.loaded * 100) / totalLength)
-                        console.log(progress)
+                        uploadFile.progress = Math.round((progressEvent.loaded * 100) / totalLength)
+                        dispatch(changeUploadFile(uploadFile))
                     }
+                    console.log('total', totalLength)
                 }
             });
             dispatch(addFile(response.data))
-        } catch (error) {
-            console.log(error);
+        } catch (e) {
+            alert(e?.response?.data?.message)
         }
     }
 }
+
 export async function downloadFile(file) {
     const response = await fetch(`${API_URL}/files/download?id=${file._id}`, {
         headers: {

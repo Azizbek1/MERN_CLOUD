@@ -5,6 +5,7 @@ import { getFiles, uploadFile } from '../../actions/file';
 import FileLists from './fileList';
 import Popup from '../../components/popup';
 import { setCurrentDir, setPopupDisplay } from '../../reducers/fileReducer';
+import Uploader from '../../components/uploder';
 
 import "./style.scss";
 const DiskPage = () => {
@@ -61,6 +62,7 @@ const DiskPage = () => {
                 </div>
                 <FileLists />
                 <Popup />
+                <Uploader />
             </div>
         </div> :
         <div className="drop-area"  onDrop={dropHandler} onDragEnter={dragEnterHandler} onDragLeave={dragLeaveHandler} onDragOver={dragEnterHandler}>
