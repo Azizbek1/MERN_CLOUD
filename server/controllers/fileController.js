@@ -93,6 +93,20 @@ class FileController {
             res.status(500).json({ message: "Ошибка загрузки" })
         }
     }
+    async deleteFile(req, res) {
+        try {
+            const file = await File.findOne({ _id: req.query.id, user: req.user.id })
+            if (!file) {
+                return res.status(400).json({ message: 'файл не найден' })
+            }
+            fileService.deleteFile(file)
+            await file.remove()
+            return res.json({ message: 'Файл был удален' })
+        } catch (e) {
+            console.log(e)
+            return res.status(400).json({ message: 'Каталог не пуст' })
+        }
+    }
 }
 
 module.exports = new FileController()

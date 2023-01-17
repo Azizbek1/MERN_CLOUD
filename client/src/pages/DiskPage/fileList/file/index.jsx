@@ -3,8 +3,8 @@ import dirLogo from '../../../../assets/img/dir.svg'
 import fileLogo from '../../../../assets/img/file.svg'
 import { useDispatch, useSelector } from 'react-redux';
 import { pushToStack, setCurrentDir } from './../../../../reducers/fileReducer';
+import { deleteFile, downloadFile } from '../../../../actions/file';
 import './style.scss'
-import { downloadFile } from '../../../../actions/file';
 export default function File({ file }) {
   const dispatch = useDispatch()
   const currentDir = useSelector(state => state.files.currentDir)
