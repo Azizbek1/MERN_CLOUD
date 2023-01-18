@@ -10,13 +10,17 @@ import Uploader from '../../components/uploder';
 import "./style.scss";
 const DiskPage = () => {
     const [dragEnter, setDragEnter] = useState(false)
+    const [sort, setSort] = useState('type')
+
     const dispatch = useDispatch()
+
     const currentDir = useSelector(state => state.files.currentDir)
     const dirStack = useSelector(state => state.files.dirStack)
-    console.log(currentDir);
+    const loader = useSelector(state => state.app.loader)
+    
     useEffect(() => {
-        dispatch(getFiles(currentDir))
-    }, [currentDir])
+        dispatch(getFiles(currentDir, sort))
+    }, [currentDir, sort])
 
     const showPopupHandler = () => {
         dispatch(setPopupDisplay('flex'))
@@ -48,13 +52,26 @@ const DiskPage = () => {
         files.forEach(file => dispatch(uploadFile(file, currentDir)))
         setDragEnter(false)
     }
-
+    if (loader) {
+        return (
+            <div className="loader">
+                <div className="lds-dual-ring"></div>
+            </div>
+        )
+    }
     return (!dragEnter ?
         <div>
-            <div className="disk"  onDragEnter={dragEnterHandler} onDragLeave={dragLeaveHandler} onDragOver={dragEnterHandler}>
+            <div className="disk" onDragEnter={dragEnterHandler} onDragLeave={dragLeaveHandler} onDragOver={dragEnterHandler}>
                 <div className="disk__btns">
                     <button className="disk__back" onClick={() => backClickHandler()}>Назад</button>
                     <button className="disk__create" onClick={() => showPopupHandler()}>Создать папку</button>
+                    <select value={sort}
+                        onChange={(e) => setSort(e.target.value)}
+                        className='disk__select'>
+                        <option value="name">По имени</option>
+                        <option value="type">По типу</option>
+                        <option value="date">По дате</option>
+                    </select>
                     <div className="disk__upload">
                         <label htmlFor="disk__upload-input" className="disk__upload-label">Загрузить файл</label>
                         <input multiple={true} onChange={(event) => fileUploadHandler(event)} type="file" id="disk__upload-input" className="disk__upload-input" />
@@ -65,7 +82,7 @@ const DiskPage = () => {
                 <Uploader />
             </div>
         </div> :
-        <div className="drop-area"  onDrop={dropHandler} onDragEnter={dragEnterHandler} onDragLeave={dragLeaveHandler} onDragOver={dragEnterHandler}>
+        <div className="drop-area" onDrop={dropHandler} onDragEnter={dragEnterHandler} onDragLeave={dragLeaveHandler} onDragOver={dragEnterHandler}>
             Перетащите файлы сюда
         </div>
     );

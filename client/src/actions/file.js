@@ -2,18 +2,31 @@ import axios from 'axios'
 import { addFile, deleteFileAction, setFiles } from '../reducers/fileReducer';
 import { API_URL } from '../constants';
 import { addUploadFile, changeUploadFile, showUploader } from '../reducers/uploadReducer';
+import { showLoader, hideLoader } from '../reducers/appReducer';
 
-export function getFiles(dirId) {
+export function getFiles(dirId, sort) {
     return async dispatch => {
+        dispatch(showLoader())
         try {
-            const response = await axios.get(`${API_URL}/files${dirId ? '?parent=' + dirId : ''}`, {
+            let url = `${API_URL}/files`
+            if (dirId) {
+                url = `${API_URL}/files?parent=${dirId}`
+            }
+            if (sort) {
+                url = `${API_URL}/files?sort=${sort}`
+            }
+            if (dirId && sort) {
+                url = `${API_URL}/files?parent=${dirId}&sort=${sort}`
+            }
+            const response = await axios.get(url, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
             });
             dispatch(setFiles(response.data))
-            console.log(response.data);
         } catch (e) {
-            // alert(e.response.data.message)
-            console.log(e.response);
+            alert(e.response.data.message)
+        }
+        finally {
+            dispatch(hideLoader())
         }
     }
 }
@@ -92,6 +105,22 @@ export function deleteFile(file) {
             alert(response.data.message)
         } catch (e) {
             alert(e?.response?.data?.message)
+        }
+    }
+}
+export function searchFiles(search) {
+    return async dispatch => {
+        try {
+            const response = await axios.get(`${API_URL}/files/search?search=${search}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+            dispatch(setFiles(response.data))
+        } catch (e) {
+            alert(e?.response?.data?.message)
+        } finally {
+            dispatch(hideLoader())
         }
     }
 }
