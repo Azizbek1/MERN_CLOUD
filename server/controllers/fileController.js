@@ -133,6 +133,32 @@ class FileController {
             return res.status(400).json({ message: 'Ошибка поиска' })
         }
     }
+    async uploadAvatar(req, res) {
+        try {
+            const file = req.files.file
+            const user = await User.findById(req.user.id)
+            const avatarName = Uuid.v4() + ".jpg"
+            file.mv(process.env.StaticPath + "\\" + avatarName)
+            user.avatar = avatarName
+            await user.save()
+            return res.json(user)
+        } catch (e) {
+            console.log(e)
+            return res.status(400).json({ message: 'Ошибка загрузки аватара' })
+        }
+    }
+    async deleteAvatar(req, res) {
+        try {
+            const user = await User.findById(req.user.id)
+            fs.unlinkSync(process.env.StaticPath + "\\" + user.avatar)
+            user.avatar = null
+            await user.save()
+            return res.json(user)
+        } catch (e) {
+            console.log(e)
+            return res.status(400).json({ message: 'Ошибка удаления аватара' })
+        }
+    }
 }
 
 module.exports = new FileController()
