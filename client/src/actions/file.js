@@ -4,6 +4,8 @@ import { API_URL } from '../constants';
 import { addUploadFile, changeUploadFile, showUploader } from '../reducers/uploadReducer';
 import { showLoader, hideLoader } from '../reducers/appReducer';
 
+
+
 export function getFiles(dirId, sort) {
     return async dispatch => {
         dispatch(showLoader())
@@ -74,7 +76,6 @@ export function uploadFile(file, dirId) {
         }
     }
 }
-
 export async function downloadFile(file) {
     const response = await fetch(`${API_URL}/files/download?id=${file._id}`, {
         headers: {
@@ -92,7 +93,6 @@ export async function downloadFile(file) {
         link.remove()
     }
 }
-
 export function deleteFile(file) {
     return async dispatch => {
         try {
