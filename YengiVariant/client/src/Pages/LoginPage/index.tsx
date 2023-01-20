@@ -4,7 +4,7 @@ import LoginStyled from "./Style";
 function LoginPage() {
     return (
         <LoginStyled> 
-
+            Login
         </LoginStyled>
     )
 }

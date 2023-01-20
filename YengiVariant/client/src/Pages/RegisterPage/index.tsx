@@ -3,9 +3,9 @@ import RegisterStyled from "./Style";
 
 function RegisterPage() {
     return (
-        <>
-            
-        </>
+        <RegisterStyled>
+            Register Page  
+        </RegisterStyled>
     )
 }
 

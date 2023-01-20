@@ -8,32 +8,34 @@ import DiskPage from "./Pages/DiskPage";
 import NotifacationPage from "./Pages/NotifacationPage";
 import LoginPage from "./Pages/LoginPage";
 import RegisterPage from "./Pages/RegisterPage";
-
+import GlobalStyle from "./Style/GlobalStyle";
 const App = () => {
   const auth = true;
-  {
-    auth ? (
-      <Routes>
-        <Route element={<LayoutPage />}>
-          <Route index element={<DiskPage />} />
-          {PrivateRouter.map((route) => (
-            <Route
-              element={route.component}
-              path={route.path}
-              key={route.key}
-            ></Route>
-          ))}
+  return (
+    <GlobalStyle>
+      {auth ? (
+        <Routes>
+          <Route element={<LayoutPage />}>
+            <Route index element={<DiskPage />} />
+            {PrivateRouter.map((route) => (
+              <Route
+                element={route.component}
+                path={route.path}
+                key={route.key}
+              />
+            ))}
+            <Route path="*" element={<NotifacationPage />} />
+          </Route>
+        </Routes>
+      ) : (
+        <Routes>
+          <Route index element={<LoginPage />} />
+          <Route path="register" element={<RegisterPage />} />
           <Route path="*" element={<NotifacationPage />} />
-        </Route>
-      </Routes>
-    ) : (
-      <Routes>
-        <Route index element={<LoginPage />} />
-        <Route element={<RegisterPage />} />
-        <Route path="*" element={<NotifacationPage />} />
-      </Routes>
-    );
-  }
+        </Routes>
+      )}
+    </GlobalStyle>
+  );
 };
 
 export default App;
